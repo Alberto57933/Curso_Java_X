@@ -30,11 +30,10 @@ public class OrderService {
 	
 	public CustomerOrder saveOrder(CustomerOrder customerOrder)
 	{
-		log.info("Saving order for customer: {}", customerOrder.getCustomerName());
+		log.info("Saving order for customer");
 		// Asociar cada producto con la orden
         List<Product> products = customerOrder.getProducts();
         if (products != null) {
-            log.info("Products before association: {}", products);
             for (Product product : products) {
                 log.info("Associating product {} with order {}", product.getName(), customerOrder.getCustomerName());
                 product.setCustomerOrder(customerOrder);  // Establece la relación
@@ -45,7 +44,7 @@ public class OrderService {
 
         // Guardar la orden
         CustomerOrder savedOrder = orderRepository.save(customerOrder);
-        log.info("Order saved with ID: {} and products: {}", savedOrder.getId());
+        log.info("Order saved with ID and products");
         return savedOrder;
 	}
 	

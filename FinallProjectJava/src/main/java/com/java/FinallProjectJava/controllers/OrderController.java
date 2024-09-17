@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.FinallProjectJava.entity.CustomerOrder;
+import com.java.FinallProjectJava.messaging.OrderMessageSender;
 import com.java.FinallProjectJava.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderMessageSender messageSender;
 
     @GetMapping
     public List<CustomerOrder> getAllOrders() {
@@ -40,9 +42,10 @@ public class OrderController {
 
     @PostMapping
     public CustomerOrder createOrder(@RequestBody CustomerOrder customerOrder) {
-    	log.info("Received request to create order kkkkkkkkkkkkkkkkk: {}", customerOrder);  // Log para rastrear la solicitud entrante
+    	log.info("Received request to create order");  // Log para rastrear la solicitud entrante
         CustomerOrder savedOrder = orderService.saveOrder(customerOrder);
-        log.info("Order saved: {}", savedOrder);  // Log cuando la orden haya sido guardada
+        log.info("Order saved");  // Log cuando la orden haya sido guardada
+        messageSender.sendOrder(savedOrder);//Message RabbitMQ
         return savedOrder;
     }
 
