@@ -12,24 +12,24 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Data
-@NoArgsConstructor
-public class Product {
+@Entity // Marks this class as a JPA entity
+@Data // Lombok: generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok: generates a no-arguments constructor
+public class Product { // Represents a product entity
+
+	@Id // Marks this field as the primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generates ID values
+	private Long id; // Unique identifier for the product
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String name; // Product name
 	
-	private String name;
+	private String description; // Product description
 	
-	private String description;
+	private double price; // Product price
 	
-	private double price;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name ="order_id", nullable =false)
-	@JsonIgnore
-	private CustomerOrder customerOrder;
-	
+	@ManyToOne(fetch = FetchType.LAZY) // Many products can be associated with one order
+	@JoinColumn(name ="order_id", nullable =false) // Maps the foreign key to the order
+	@JsonIgnore // Prevents circular references during JSON serialization
+	private CustomerOrder customerOrder; // The associated order for this product
 }
+

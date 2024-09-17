@@ -13,6 +13,7 @@ public class OrderMessageListener {
 
     @RabbitListener(queues = "${order.queue}")
     public void receiveOrder(CustomerOrder order) {
+        // Logs the received order from RabbitMQ
         log.info("Received order message: {}", order);
     }
 }

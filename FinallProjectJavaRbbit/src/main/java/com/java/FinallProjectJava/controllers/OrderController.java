@@ -25,16 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderController {
 
+    // Injects services and message sender
     private final OrderService orderService;
     private final OrderMessageSender messageSender;
 
     @GetMapping
     public List<CustomerOrder> getAllOrders() {
+        // Returns all customer orders
         return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerOrder> getOrderById(@PathVariable Long id) {
+        // Retrieves order by ID, handles not found
         Optional<CustomerOrder> order = orderService.getOrderById(id);
         return order.map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
@@ -42,11 +45,14 @@ public class OrderController {
 
     @PostMapping
     public CustomerOrder createOrder(@RequestBody CustomerOrder customerOrder) {
+        // Saves a new customer order
         CustomerOrder savedOrder = orderService.saveOrder(customerOrder);
 
         try {
+            // Sends order to RabbitMQ
             messageSender.sendOrder(savedOrder);
         } catch (Exception e) {
+            // Logs error if RabbitMQ fails
             log.error("Failed to send order to RabbitMQ", e);
         }
 
@@ -55,7 +61,9 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        // Deletes order by ID
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 }
+

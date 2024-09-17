@@ -16,23 +16,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
-@Data
-@NoArgsConstructor
-public class CustomerOrder implements Serializable {
+@Entity // Marks this class as a JPA entity
+@Data // Lombok: generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok: generates a no-arguments constructor
+public class CustomerOrder implements Serializable { // Implements Serializable for message conversion
+
+	private static final long serialVersionUID = 1L; // Ensures compatibility during serialization
+
+	@Id // Marks this field as the primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generates ID values
+	private Long id; // Unique identifier for the order
 	
-	private static final long serialVersionUID = 1L;
+	@NotNull // Ensures this field cannot be null
+	private String customerName; // Customer's name
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String orderDate; // Date when the order was placed
 	
-	@NotNull
-	private String customerName;
-	
-	private String orderDate;
-	
-	@OneToMany(mappedBy = "customerOrder",orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@ToString.Exclude
-	private List<Product> products;
+	@OneToMany(mappedBy = "customerOrder", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY) 
+	// OneToMany relationship: an order can have multiple products
+	@ToString.Exclude // Excludes products from toString() to avoid circular reference
+	private List<Product> products; // List of products associated with this order
 }
+
